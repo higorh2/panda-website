@@ -1,0 +1,386 @@
+<title>Catálogo Panda Varejo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: cabeçalho fixo, faixa de destaques, grade de modelos e ficha em janela sobreposta. */
+:root {
+  --bg: #0C0F0D;
+  --card: #161B18;
+  --card2: #1B201D;
+  --line: #2B352F;
+  --text: #F1F4F2;
+  --muted: #B3BEB7;
+  --lime: #B9E41E;
+  --green: #2FD05A;
+  --photo: #F0F2F1;
+  --ink: #07150A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Poppins, system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  line-height: 1.45;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+button { font: inherit; }
+
+.wrap { max-width: 1100px; margin: 0 auto; }
+
+/* cabeçalho */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.brand { font-weight: 800; letter-spacing: 6px; font-size: 18px; }
+.brand span { display: block; color: var(--green); font-size: 9px; letter-spacing: 3px; font-weight: 600; margin-top: 2px; }
+.top .cidades { font-size: 12px; color: var(--muted); letter-spacing: 1px; text-align: right; }
+
+/* destaque inicial */
+.hero { padding: 32px 0 24px; }
+.hero h1 { margin: 0; font-size: clamp(34px, 9vw, 56px); font-weight: 800; color: var(--lime); line-height: 1.05; text-wrap: balance; }
+.hero p.sub { margin: 8px 0 0; color: var(--text); font-size: 15px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.chip-dest { display: inline-flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 600; }
+.chip-dest::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.hero .resumo { margin: 16px 0 0; color: var(--muted); font-size: 14px; }
+
+/* filtros */
+.filtros { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 18px; scrollbar-width: none; }
+.filtros::-webkit-scrollbar { display: none; }
+.filtros button { flex: 0 0 auto; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; font-size: 13px; cursor: pointer; }
+.filtros button[aria-pressed="true"] { background: var(--lime); color: var(--ink); border-color: var(--lime); font-weight: 700; }
+.filtros button:focus-visible, .btn:focus-visible, .fechar:focus-visible, .seta:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+
+/* grade de modelos */
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 720px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+@media (min-width: 980px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; text-align: left; color: inherit; padding: 0; }
+.card:hover { border-color: #3D4D43; }
+.card .foto { background: var(--photo); aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; }
+.card .foto img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+.card .corpo { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.card .grupo { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.card .nome { font-size: 20px; font-weight: 800; color: var(--lime); line-height: 1.1; }
+.card .preco { margin-top: auto; padding-top: 6px; font-size: 16px; font-weight: 700; }
+.card .preco small { display: block; font-size: 10px; color: var(--muted); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+.card .selo { align-self: flex-start; background: var(--lime); color: var(--ink); font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 3px 8px; border-radius: 999px; margin-bottom: 2px; }
+
+/* seções de apoio */
+.secao { margin: 36px 0 0; }
+.secao h2 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin: 0 0 12px; font-weight: 700; }
+.contatos { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 620px) { .contatos { grid-template-columns: 1fr 1fr; } }
+.contato { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.contato .rotulo { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.contato .valor { font-size: 16px; font-weight: 700; }
+.contato .botoes { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; background: var(--lime); color: var(--ink); font-weight: 700; font-size: 13px; padding: 9px 14px; border-radius: 999px; border: 0; cursor: pointer; }
+.btn.verde { background: var(--green); }
+.btn.sec { background: transparent; color: var(--text); border: 1px solid var(--line); }
+.comprar { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 620px) { .comprar { grid-template-columns: 1fr 1fr; } }
+.comprar div { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.comprar h3 { margin: 0 0 6px; font-size: 15px; font-weight: 700; }
+.comprar p { margin: 0; color: var(--muted); font-size: 13px; }
+.rodape { margin: 36px 0 0; padding: 18px 0 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; text-align: center; }
+
+/* lojas */
+.lojas { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 620px) { .lojas { grid-template-columns: 1fr 1fr; } }
+.loja { background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--green); border-radius: 12px; padding: 16px 18px; }
+.loja h3 { margin: 0; font-size: 26px; font-weight: 800; color: var(--lime); }
+.loja .endereco { margin: 8px 0 0; font-weight: 600; font-size: 15px; }
+.loja .endereco a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.loja .endereco a:hover { text-decoration: underline; }
+.pin { width: 18px; height: 18px; fill: var(--lime); flex: 0 0 auto; }
+.loja .cidade { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.loja .fone { margin: 6px 0 12px; color: var(--muted); font-size: 13px; }
+
+/* janela da ficha */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.72); display: flex; align-items: flex-end; justify-content: center; z-index: 50; padding: 0; }
+.modal[hidden] { display: none !important; }
+.painel { background: var(--bg); border: 1px solid var(--line); width: 100%; max-width: 720px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; padding: 16px 16px 24px; position: relative; }
+@media (min-width: 720px) { .modal { align-items: center; } .painel { border-radius: 18px; padding: 22px 24px 28px; } }
+.fechar { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 20px; cursor: pointer; line-height: 1; }
+.galeria { position: relative; background: var(--photo); border-radius: 14px; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.galeria img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+.seta { position: absolute; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(7,21,10,.85); color: var(--lime); font-size: 20px; cursor: pointer; }
+.seta.esq { left: 8px; }
+.seta.dir { right: 8px; }
+.galeria .contagem { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); background: rgba(7,21,10,.85); color: var(--lime); font-size: 11px; padding: 3px 10px; border-radius: 999px; }
+.ficha-topo { margin-top: 16px; }
+.ficha-topo .grupo { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.ficha-topo h2 { margin: 2px 0 0; font-size: 44px; font-weight: 800; color: var(--lime); line-height: 1; }
+.preco-box { margin-top: 14px; background: var(--card2); border: 1px solid var(--line); border-left: 5px solid var(--green); border-radius: 12px; padding: 12px 16px; }
+.preco-box small { display: block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.preco-box strong { font-size: 30px; color: var(--lime); font-weight: 800; }
+.preco-box p { margin: 4px 0 0; font-size: 13px; color: var(--text); }
+.specs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+@media (min-width: 560px) { .specs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.specs div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.specs small { display: block; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.specs b { font-size: 16px; font-variant-numeric: tabular-nums; }
+.beneficios { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.beneficios span { background: #0F2016; border: 1px solid #1F5A33; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 600; }
+.cores { margin-top: 14px; }
+.cores h4 { margin: 0 0 6px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); }
+.cores p { margin: 0; color: var(--text); font-size: 14px; }
+.acoes { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 18px; }
+@media (min-width: 560px) { .acoes { grid-template-columns: 1fr 1fr; } }
+.acoes .btn { padding: 13px 14px; font-size: 14px; }
+.telefones { margin-top: 12px; font-size: 13px; color: var(--muted); text-align: center; }
+.telefones a { color: var(--text); font-weight: 600; }
+
+/* grade: sem resultados */
+.vazio { grid-column: 1 / -1; color: var(--muted); padding: 24px 0; text-align: center; }
+</style>
+
+<header class="top wrap">
+  <div class="brand">PANDA<span>SCOOTER ELÉTRICA</span></div>
+  <div class="cidades">Bauru e Avaré</div>
+</header>
+
+<main class="wrap">
+  <section class="hero" aria-labelledby="titulo">
+    <h1 id="titulo">Catálogo Varejo</h1>
+    <p class="sub">27 modelos para todo estilo</p>
+    <div class="chips">
+      <span class="chip-dest">Bateria de alta autonomia</span>
+      <span class="chip-dest">Segurança e confiabilidade</span>
+    </div>
+    <p class="resumo">Scooter autopropelida que não precisa de CNH. Você testa antes de comprar e recebe em casa.</p>
+  </section>
+
+  <nav class="filtros" id="filtros" aria-label="Filtrar por uso"></nav>
+
+  <section class="grid" id="grid" aria-live="polite"></section>
+
+  <section class="secao" id="lojas" aria-labelledby="h-lojas">
+    <h2 id="h-lojas">Nossas lojas</h2>
+    <div class="lojas">
+      <div class="loja">
+        <h3>Bauru</h3>
+        <p class="endereco"><a href="https://www.google.com/maps/place/Panda+Scooters+El%C3%A9tricas/@-22.3173779,-49.069793,763m/data=!3m2!1e3!4b1!4m6!3m5!1s0x94bf67a55af77c1f:0x2e02d9646aa6c9ba!8m2!3d-22.3173829!4d-49.0672181!16s%2Fg%2F11ntftz58_?authuser=0&entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener"><svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg> R. Marcondes Salgado, 960 · Vila Antarctica</a></p>
+        <p class="cidade">Bauru - SP · CEP 17013-170</p>
+        <p class="fone">WhatsApp (14) 99636-4081</p>
+        <a class="btn verde" href="https://www.google.com/maps/place/Panda+Scooters+El%C3%A9tricas/@-22.3173779,-49.069793,763m/data=!3m2!1e3!4b1!4m6!3m5!1s0x94bf67a55af77c1f:0x2e02d9646aa6c9ba!8m2!3d-22.3173829!4d-49.0672181!16s%2Fg%2F11ntftz58_?authuser=0&entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener">Abrir no Google Maps</a>
+      </div>
+      <div class="loja">
+        <h3>Avaré</h3>
+        <p class="endereco"><a href="https://www.google.com/maps/place/Panda+Scooters+El%C3%A9tricas/@-23.0986311,-48.9265017,758m/data=!3m2!1e3!4b1!4m6!3m5!1s0x94c1272b95ee31c5:0x5cb9ec57c355d81f!8m2!3d-23.0986361!4d-48.9239268!16s%2Fg%2F11yxkgpzq9?authuser=0&entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener"><svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg> R. São Paulo, 1455 · Centro</a></p>
+        <p class="cidade">Avaré - SP · CEP 18705-100</p>
+        <p class="fone">WhatsApp (15) 99838-3231</p>
+        <a class="btn verde" href="https://www.google.com/maps/place/Panda+Scooters+El%C3%A9tricas/@-23.0986311,-48.9265017,758m/data=!3m2!1e3!4b1!4m6!3m5!1s0x94c1272b95ee31c5:0x5cb9ec57c355d81f!8m2!3d-23.0986361!4d-48.9239268!16s%2Fg%2F11yxkgpzq9?authuser=0&entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener">Abrir no Google Maps</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao" id="comprar" aria-labelledby="h-comprar">
+    <h2 id="h-comprar">Como comprar</h2>
+    <div class="comprar">
+      <div><h3>Pagamento</h3><p>Pix ou dinheiro à vista. Cartão de crédito em até 21x, com as taxas da operadora. Não trabalhamos com boleto.</p></div>
+      <div><h3>Entrega</h3><p>Sem custo até 100 km da loja. Acima de 100 km: valor a combinar. Patinetes: não entregamos, somente retirada na loja.</p></div>
+      <div><h3>Garantia</h3><p>Chassi, motor e bateria: 2 anos. Partes elétricas e patinetes: 3 meses. Vale a partir da nota fiscal. Pneus e mau uso não são cobertos.</p></div>
+      <div><h3>Técnica própria</h3><p>Assistência feita nas nossas lojas de Bauru e Avaré.</p></div>
+    </div>
+  </section>
+
+  <section class="secao" id="contato" aria-labelledby="h-contato">
+    <h2 id="h-contato">Fale com a gente</h2>
+    <div class="contatos">
+      <div class="contato">
+        <div><div class="rotulo">WhatsApp · Bauru</div><div class="valor">(14) 99636-4081</div></div>
+        <div class="botoes"><a class="btn verde" href="https://wa.me/5514996364081" target="_blank" rel="noopener">WhatsApp</a><a class="btn sec" href="tel:+5514996364081">Ligar</a></div>
+      </div>
+      <div class="contato">
+        <div><div class="rotulo">WhatsApp · Avaré</div><div class="valor">(15) 99838-3231</div></div>
+        <div class="botoes"><a class="btn verde" href="https://wa.me/5515998383231" target="_blank" rel="noopener">WhatsApp</a><a class="btn sec" href="tel:+5515998383231">Ligar</a></div>
+      </div>
+      <div class="contato">
+        <div><div class="rotulo">Assistência técnica</div><div class="valor">(14) 99641-9487</div></div>
+        <div class="botoes"><a class="btn verde" href="https://wa.me/5514996419487" target="_blank" rel="noopener">WhatsApp</a><a class="btn sec" href="tel:+5514996419487">Ligar</a></div>
+      </div>
+      <div class="contato">
+        <div><div class="rotulo">Instagram · Bauru</div><div class="valor">@panda.bauru</div></div>
+        <div class="botoes"><a class="btn" href="https://www.instagram.com/panda.bauru/" target="_blank" rel="noopener">Abrir perfil</a></div>
+      </div>
+      <div class="contato">
+        <div><div class="rotulo">Instagram · Avaré</div><div class="valor">@panda.avare</div></div>
+        <div class="botoes"><a class="btn" href="https://www.instagram.com/panda.avare/" target="_blank" rel="noopener">Abrir perfil</a></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="rodape">Panda Scooter Elétrica · Catálogo Varejo · Bauru e Avaré<br>Tecnologia · Performance · Confiança</footer>
+</main>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="ficha-nome">
+  <div class="painel" id="painel">
+    <button class="fechar" id="fechar" aria-label="Fechar ficha">×</button>
+    <div class="galeria" id="galeria">
+      <img id="foto" alt="">
+      <button class="seta esq" id="ant" aria-label="Foto anterior">‹</button>
+      <button class="seta dir" id="prox" aria-label="Próxima foto">›</button>
+      <span class="contagem" id="contagem"></span>
+    </div>
+    <div class="ficha-topo">
+      <div class="grupo" id="ficha-grupo"></div>
+      <h2 id="ficha-nome"></h2>
+    </div>
+    <div class="preco-box">
+      <small>Preço à vista</small>
+      <strong id="ficha-preco"></strong>
+      <p>Parcelamento em até <b>21x</b> no cartão, sob consulta. Pix e dinheiro à vista.</p>
+    </div>
+    <div class="specs" id="ficha-specs"></div>
+    <div class="beneficios" id="ficha-benef"></div>
+    <div class="cores" id="ficha-cores"></div>
+    <div class="acoes">
+      <a class="btn verde" id="wa-bauru" href="#" target="_blank" rel="noopener">Pedir no WhatsApp · Bauru</a>
+      <a class="btn verde" id="wa-avare" href="#" target="_blank" rel="noopener">Pedir no WhatsApp · Avaré</a>
+    </div>
+    <p class="telefones">Bauru <a href="tel:+5514996364081">(14) 99636-4081</a> · Avaré <a href="tel:+5515998383231">(15) 99838-3231</a></p>
+  </div>
+</div>
+
+<script>
+const PRODUTOS = [{"key": "A4", "name": "A4", "price": 8490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Verde", "Cinza", "Branca", "Preta"], "images": ["img/A4.jpg"], "featured": true}, {"key": "R13", "name": "R13", "price": 9490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta", "Cinza", "Branca", "Carbono", "Vermelha", "Preta (Inglaterra)"], "images": ["img/R13.jpg"], "featured": true}, {"key": "WD-4", "name": "WD-4", "price": 8490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Vermelha", "Preta", "Laranja", "Branca", "Azul"], "images": ["img/WD-4.jpg"], "featured": true}, {"key": "A5", "name": "A5", "price": 8490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta", "Prata", "Laranja", "Cinza", "Branca"], "images": ["img/A5.jpg"], "featured": false}, {"key": "WD-6", "name": "WD-6", "price": 8490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Amarela", "Branca", "Vinho", "Cinza"], "images": ["img/WD-6.jpg"], "featured": false}, {"key": "T3", "name": "T3", "price": 7490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "170 kg"]], "cores": ["Branca", "Preta brilhante", "Cinza"], "images": ["img/T3.jpg"], "featured": false}, {"key": "WD2_S", "name": "WD2 S", "price": 5990, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Vermelha", "Verde", "Preta", "Cinza", "Branca"], "images": ["img/WD2_S.jpg"], "featured": false}, {"key": "WD2", "name": "WD2", "price": 5690, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta fosca", "Carbono", "Branca", "Verde"], "images": ["img/WD2.jpg"], "featured": false}, {"key": "J20", "name": "J20", "price": 5490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Branca", "Preta", "Verde musgo"], "images": ["img/J20.jpg"], "featured": false}, {"key": "T2", "name": "T2", "price": 5890, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "170 kg"]], "cores": ["Cinza", "Azul", "Preta"], "images": ["img/T2.jpg"], "featured": false}, {"key": "Z1", "name": "Z1", "price": 5290, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Preta", "Verde", "Branca"], "images": ["img/Z1.jpg"], "featured": false}, {"key": "J10", "name": "J10", "price": 5290, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Castanho", "Preta"], "images": ["img/J10.jpg"], "featured": false}, {"key": "Z2", "name": "Z2", "price": 4490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "500W"], ["Bateria", "48V/12AH"], ["Autonomia", "30/40 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "100 kg"]], "cores": ["Verde", "Roxa", "Rosa", "Preta", "Cinza", "Azul"], "images": ["img/Z2.jpg"], "featured": false}, {"key": "F2", "name": "F2", "price": 6490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Verde", "Branca", "Bege", "Cinza", "Preta"], "images": ["img/F2.jpg"], "featured": false}, {"key": "J12_MAX", "name": "J12 MAX", "price": 6490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Castanho", "Azul", "Verde musgo", "Cinza", "Branca", "Preta"], "images": ["img/J12_MAX.jpg"], "featured": false}, {"key": "Q1", "name": "Q1", "price": 7490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "170 kg"]], "cores": ["Preta fosca", "Preta brilhante", "Cinza", "Branca"], "images": ["img/Q1.jpg"], "featured": false}, {"key": "PD-100", "name": "PD-100", "price": 3990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "400W"], ["Bateria", "36V/10AH"], ["Autonomia", "25/35 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "5h a 7h"], ["Capacidade", "100 kg"]], "cores": ["Vermelha", "Azul", "Amarela"], "images": ["img/PD-100.jpg"], "featured": false}, {"key": "V8_PRO", "name": "V8 PRO", "price": 7490, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Branca", "Cinza", "Preta", "Preta (banco marrom)"], "images": ["img/V8_PRO.jpg"], "featured": false}, {"key": "GT-16", "name": "GT-16", "price": 7990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta", "Laranja"], "images": ["img/GT-16.jpg"], "featured": false}, {"key": "GT-20", "name": "GT-20", "price": 8590, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta (banco preto)", "Preta (banco marrom)", "Cinza"], "images": ["img/GT-20.jpg"], "featured": false}, {"key": "Q8", "name": "Q8", "price": 8900, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta", "Cinza", "Branca"], "images": ["img/Q8.jpg"], "featured": false}, {"key": "GT-2000", "name": "GT-2000", "price": 10990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "2000W"], ["Bateria", "48V/24AH"], ["Autonomia", "60/70 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "170 kg"]], "cores": [], "images": ["img/GT-2000.jpg"], "featured": false}, {"key": "U1", "name": "U1", "price": 11490, "group": "Triciclos para passeio", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "200 kg"]], "cores": ["Verde", "Cinza", "Preta", "Vermelha", "Laranja"], "images": ["img/U1.jpg"], "featured": false}, {"key": "U1S", "name": "U1S", "price": 12490, "group": "Triciclos para passeio", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/30AH"], ["Autonomia", "60/70 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "250 kg"]], "cores": ["Cinza", "Preta", "Vermelha", "Laranja"], "images": ["img/U1S.jpg"], "featured": false}, {"key": "A7", "name": "A7", "price": 1790, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "350W"], ["Bateria", "60V/24AH"], ["Autonomia", "20 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "50 kg"]], "cores": ["Verde água", "Laranja", "Preta"], "images": ["img/A7.jpg"], "featured": false}, {"key": "D2", "name": "D2", "price": 3990, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "800W"], ["Bateria", "48V/15AH"], ["Autonomia", "30 km"], ["Velocidade máx.", "35 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "110 kg"]], "cores": [], "images": ["img/D2.jpg"], "featured": false}, {"key": "T2_PRO", "name": "T2 PRO", "price": 3990, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "800W"], ["Bateria", "48V/15AH"], ["Autonomia", "30 km"], ["Velocidade máx.", "35 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "110 kg"]], "cores": [], "images": ["img/T2_PRO.jpg"], "featured": false}];
+const TELEFONE_BAURU = "5514996364081";
+const TELEFONE_AVARE = "5515998383231";
+
+const brl = v => "R$ " + v.toLocaleString("pt-BR");
+const grupos = ["Todos"].concat([...new Set(PRODUTOS.map(p => p.group))]);
+let filtroAtual = "Todos";
+let fotoAtual = 0;
+let modeloAtual = null;
+
+function renderFiltros() {
+  const nav = document.getElementById("filtros");
+  nav.innerHTML = "";
+  grupos.forEach(g => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = g;
+    b.setAttribute("aria-pressed", g === filtroAtual ? "true" : "false");
+    b.addEventListener("click", () => { filtroAtual = g; renderFiltros(); renderGrid(); });
+    nav.appendChild(b);
+  });
+}
+
+function renderGrid() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  const lista = PRODUTOS.filter(p => filtroAtual === "Todos" || p.group === filtroAtual);
+  if (!lista.length) {
+    const v = document.createElement("p");
+    v.className = "vazio";
+    v.textContent = "Nenhum modelo nesta categoria.";
+    grid.appendChild(v);
+    return;
+  }
+  lista.forEach(p => {
+    const c = document.createElement("button");
+    c.type = "button";
+    c.className = "card";
+    c.setAttribute("aria-label", "Ver ficha do modelo " + p.name);
+    c.innerHTML =
+      '<div class="foto"><img src="' + p.images[0] + '" alt="' + p.name + '" loading="lazy"></div>' +
+      '<div class="corpo">' +
+        (p.featured ? '<span class="selo">DESTAQUE DO MÊS</span>' : '') +
+        '<span class="grupo"></span>' +
+        '<span class="nome"></span>' +
+        '<span class="preco"><small>À vista</small></span>' +
+      '</div>';
+    c.querySelector(".grupo").textContent = p.group;
+    c.querySelector(".nome").textContent = p.name;
+    c.querySelector(".preco").insertAdjacentText("beforeend", brl(p.price));
+    c.addEventListener("click", () => abrirFicha(p));
+    grid.appendChild(c);
+  });
+}
+
+function mostrarFoto() {
+  const p = modeloAtual;
+  const img = document.getElementById("foto");
+  img.src = p.images[fotoAtual];
+  img.alt = p.name + " - foto " + (fotoAtual + 1);
+  const multi = p.images.length > 1;
+  document.getElementById("ant").hidden = !multi;
+  document.getElementById("prox").hidden = !multi;
+  document.getElementById("contagem").hidden = !multi;
+  document.getElementById("contagem").textContent = (fotoAtual + 1) + " / " + p.images.length;
+}
+
+function abrirFicha(p) {
+  modeloAtual = p;
+  fotoAtual = 0;
+  mostrarFoto();
+  document.getElementById("ficha-grupo").textContent = p.group;
+  document.getElementById("ficha-nome").textContent = p.name;
+  document.getElementById("ficha-preco").textContent = brl(p.price);
+
+  const sp = document.getElementById("ficha-specs");
+  sp.innerHTML = "";
+  p.specs.forEach(([rot, val]) => {
+    const d = document.createElement("div");
+    const s = document.createElement("small"); s.textContent = rot;
+    const b = document.createElement("b"); b.textContent = val;
+    d.appendChild(s); d.appendChild(b); sp.appendChild(d);
+  });
+
+  const bn = document.getElementById("ficha-benef");
+  bn.innerHTML = "";
+  const beneficios = [p.patinete ? "Garantia de 3 meses" : "Garantia de 2 anos",
+                      p.patinete ? "Retire na loja" : "Entrega sem custo até 100 km",
+                      "Test-drive na loja"];
+  beneficios.forEach(t => { const s = document.createElement("span"); s.textContent = t; bn.appendChild(s); });
+
+  const cr = document.getElementById("ficha-cores");
+  cr.innerHTML = "";
+  if (p.cores.length) {
+    const h = document.createElement("h4"); h.textContent = "Cores disponíveis";
+    const t = document.createElement("p"); t.textContent = p.cores.join(" · ");
+    cr.appendChild(h); cr.appendChild(t);
+  } else {
+    const t = document.createElement("p"); t.textContent = "Consulte as cores disponíveis na loja.";
+    cr.appendChild(t);
+  }
+
+  const msg = encodeURIComponent("Olá! Tenho interesse no modelo " + p.name + ". Pode me passar mais informações?");
+  document.getElementById("wa-bauru").href = "https://wa.me/" + TELEFONE_BAURU + "?text=" + msg;
+  document.getElementById("wa-avare").href = "https://wa.me/" + TELEFONE_AVARE + "?text=" + msg;
+
+  document.getElementById("modal").hidden = false;
+  document.getElementById("painel").scrollTop = 0;
+  document.getElementById("fechar").focus();
+}
+
+function fecharFicha() {
+  document.getElementById("modal").hidden = true;
+}
+
+function mudarFoto(delta) {
+  if (!modeloAtual || modeloAtual.images.length < 2) return;
+  const n = modeloAtual.images.length;
+  fotoAtual = (fotoAtual + delta + n) % n;
+  mostrarFoto();
+}
+
+document.getElementById("fechar").addEventListener("click", fecharFicha);
+document.getElementById("modal").addEventListener("click", e => { if (e.target.id === "modal") fecharFicha(); });
+document.getElementById("ant").addEventListener("click", () => mudarFoto(-1));
+document.getElementById("prox").addEventListener("click", () => mudarFoto(1));
+document.addEventListener("keydown", e => {
+  if (document.getElementById("modal").hidden) return;
+  if (e.key === "Escape") fecharFicha();
+  if (e.key === "ArrowLeft") mudarFoto(-1);
+  if (e.key === "ArrowRight") mudarFoto(1);
+});
+
+renderFiltros();
+renderGrid();
+</script>
