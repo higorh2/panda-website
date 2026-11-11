@@ -119,10 +119,6 @@ button { font: inherit; }
 .galeria.giro.arrastando { cursor: grabbing; }
 .galeria.giro img { padding: 0; pointer-events: none; -webkit-user-drag: none; }
 .galeria .dica { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(7,21,10,.85); color: var(--text); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px; white-space: nowrap; pointer-events: none; }
-.modo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-.modo button { background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 999px; padding: 10px 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
-.modo button[aria-pressed="true"] { background: var(--lime); color: var(--ink); border-color: var(--lime); }
-.modo button:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
 .ilustra { margin: 8px 0 0; font-size: 11px; color: var(--muted); text-align: center; }
 .card .selo360 { align-self: flex-start; border: 1px solid var(--green); color: var(--green); font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 2px 8px; border-radius: 999px; margin-bottom: 2px; }
 .ficha-topo { margin-top: 16px; }
@@ -244,10 +240,6 @@ button { font: inherit; }
       <span class="contagem" id="contagem"></span>
       <span class="dica" id="dica" hidden>↔ arraste para girar</span>
     </div>
-    <div class="modo" id="modo" hidden>
-      <button type="button" id="modo-fotos" aria-pressed="true">Fotos</button>
-      <button type="button" id="modo-360" aria-pressed="false">Ver em 360°</button>
-    </div>
     <p class="ilustra" id="ilustra" hidden>Giro 360°: imagens ilustrativas.</p>
     <div class="ficha-topo">
       <div class="grupo" id="ficha-grupo"></div>
@@ -332,10 +324,6 @@ function mostrarFoto() {
   const p = modeloAtual;
   const img = document.getElementById("foto");
   const gal = document.getElementById("galeria");
-  const tem360 = !!(p.spin && p.spin.length);
-  document.getElementById("modo").hidden = !tem360;
-  document.getElementById("modo-fotos").setAttribute("aria-pressed", modo360 ? "false" : "true");
-  document.getElementById("modo-360").setAttribute("aria-pressed", modo360 ? "true" : "false");
   document.getElementById("ilustra").hidden = !modo360;
   gal.classList.toggle("giro", modo360);
   if (modo360) {
@@ -364,7 +352,7 @@ function abrirFicha(p, em360) {
   modeloAtual = p;
   if (p.imagensPadrao) p.images = p.imagensPadrao.slice();
   fotoAtual = 0;
-  modo360 = !!(em360 && p.spin && p.spin.length);
+  modo360 = !!(p.spin && p.spin.length);     // modelo com giro mostra somente a versão em 360°
   giroAtual = 1;
   if (p.spin) p.spin.forEach(q => { const i = new Image(); i.src = q.src; });   // já deixa os quadros carregados
   document.getElementById("dica").hidden = !modo360;
@@ -454,16 +442,6 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft") mudarFoto(-1);
   if (e.key === "ArrowRight") mudarFoto(1);
 });
-
-function definirModo(v) {
-  if (!modeloAtual) return;
-  modo360 = !!(v && modeloAtual.spin);
-  giroAtual = 1;
-  document.getElementById("dica").hidden = !modo360;
-  mostrarFoto();
-}
-document.getElementById("modo-fotos").addEventListener("click", () => definirModo(false));
-document.getElementById("modo-360").addEventListener("click", () => definirModo(true));
 
 // giro: arrastar a foto para os lados
 (function () {
