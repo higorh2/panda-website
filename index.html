@@ -17,6 +17,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   background: var(--bg);
@@ -114,6 +115,16 @@ button { font: inherit; }
 .seta.esq { left: 8px; }
 .seta.dir { right: 8px; }
 .galeria .contagem { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); background: rgba(7,21,10,.85); color: var(--lime); font-size: 11px; padding: 3px 10px; border-radius: 999px; }
+.galeria.giro { background: #C0C0C2; aspect-ratio: 1 / 1; max-height: 68vh; margin: 0 auto; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.galeria.giro.arrastando { cursor: grabbing; }
+.galeria.giro img { padding: 0; pointer-events: none; -webkit-user-drag: none; }
+.galeria .dica { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(7,21,10,.85); color: var(--text); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px; white-space: nowrap; pointer-events: none; }
+.modo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.modo button { background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 999px; padding: 10px 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.modo button[aria-pressed="true"] { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+.modo button:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+.ilustra { margin: 8px 0 0; font-size: 11px; color: var(--muted); text-align: center; }
+.card .selo360 { align-self: flex-start; border: 1px solid var(--green); color: var(--green); font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 2px 8px; border-radius: 999px; margin-bottom: 2px; }
 .ficha-topo { margin-top: 16px; }
 .ficha-topo .grupo { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); font-weight: 600; }
 .ficha-topo h2 { margin: 2px 0 0; font-size: 44px; font-weight: 800; color: var(--lime); line-height: 1; }
@@ -231,7 +242,13 @@ button { font: inherit; }
       <button class="seta esq" id="ant" aria-label="Foto anterior">‹</button>
       <button class="seta dir" id="prox" aria-label="Próxima foto">›</button>
       <span class="contagem" id="contagem"></span>
+      <span class="dica" id="dica" hidden>↔ arraste para girar</span>
     </div>
+    <div class="modo" id="modo" hidden>
+      <button type="button" id="modo-fotos" aria-pressed="true">Fotos</button>
+      <button type="button" id="modo-360" aria-pressed="false">Ver em 360°</button>
+    </div>
+    <p class="ilustra" id="ilustra" hidden>Giro 360°: imagens ilustrativas.</p>
     <div class="ficha-topo">
       <div class="grupo" id="ficha-grupo"></div>
       <h2 id="ficha-nome"></h2>
@@ -253,7 +270,7 @@ button { font: inherit; }
 </div>
 
 <script>
-const PRODUTOS = [{"key": "A4", "name": "A4", "price": 8490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Verde", "Cinza", "Branca", "Preta"], "images": ["img/A4.jpg", "img/A4_ambiente.jpg"], "imagensPadrao": ["img/A4.jpg", "img/A4_ambiente.jpg"], "coresFotos": {}, "featured": true}, {"key": "R13", "name": "R13", "price": 9490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta", "Cinza", "Branca", "Carbono", "Vermelha", "Preta (Inglaterra)"], "images": ["img/R13.jpg", "img/R13_ambiente.jpg"], "imagensPadrao": ["img/R13.jpg", "img/R13_ambiente.jpg"], "coresFotos": {}, "featured": true}, {"key": "WD-4", "name": "WD-4", "price": 8490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Vermelha", "Preta", "Laranja", "Branca", "Azul"], "images": ["img/WD-4.jpg", "img/WD-4_ambiente.jpg"], "imagensPadrao": ["img/WD-4.jpg", "img/WD-4_ambiente.jpg"], "coresFotos": {}, "featured": true}, {"key": "A5", "name": "A5", "price": 8490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta", "Prata", "Laranja", "Cinza", "Branca"], "images": ["img/A5.jpg", "img/A5_ambiente.jpg"], "imagensPadrao": ["img/A5.jpg", "img/A5_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "WD-6", "name": "WD-6", "price": 8490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Amarela", "Branca", "Vinho", "Cinza"], "images": ["img/WD-6.jpg", "img/WD-6_ambiente.jpg"], "imagensPadrao": ["img/WD-6.jpg", "img/WD-6_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "T3", "name": "T3", "price": 7490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Branca", "Preta brilhante", "Cinza"], "images": ["img/T3.jpg", "img/T3_ambiente.jpg"], "imagensPadrao": ["img/T3.jpg", "img/T3_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "WD2_S", "name": "WD2 S", "price": 5990, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Vermelha", "Verde", "Preta", "Cinza", "Branca"], "images": ["img/WD2_S.jpg", "img/WD2_S_ambiente.jpg"], "imagensPadrao": ["img/WD2_S.jpg", "img/WD2_S_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "WD2", "name": "WD2", "price": 5690, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta fosca", "Carbono", "Branca", "Verde"], "images": ["img/WD2.jpg", "img/WD2_ambiente.jpg"], "imagensPadrao": ["img/WD2.jpg", "img/WD2_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "J20", "name": "J20", "price": 5490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Branca", "Preta", "Verde musgo"], "images": ["img/J20.jpg", "img/J20_ambiente.jpg"], "imagensPadrao": ["img/J20.jpg", "img/J20_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "T2", "name": "T2", "price": 5890, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Azul", "Preta"], "images": ["img/T2.jpg"], "imagensPadrao": ["img/T2.jpg"], "coresFotos": {}, "featured": false}, {"key": "Z1", "name": "Z1", "price": 5290, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Preta", "Verde", "Branca"], "images": ["img/Z1.jpg", "img/Z1_ambiente.jpg"], "imagensPadrao": ["img/Z1.jpg", "img/Z1_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "J10", "name": "J10", "price": 5290, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Castanho", "Preta"], "images": ["img/J10.jpg", "img/J10_ambiente.jpg"], "imagensPadrao": ["img/J10.jpg", "img/J10_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "Z2", "name": "Z2", "price": 4490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "500W"], ["Bateria", "48V/12AH"], ["Autonomia", "30/40 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "100 kg"]], "cores": ["Verde", "Roxa", "Rosa", "Preta", "Cinza", "Azul"], "images": ["img/Z2.jpg"], "imagensPadrao": ["img/Z2.jpg"], "coresFotos": {}, "featured": false}, {"key": "F2", "name": "F2", "price": 6490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Verde", "Branca", "Bege", "Cinza", "Preta"], "images": ["img/F2.jpg", "img/F2_ambiente.jpg"], "imagensPadrao": ["img/F2.jpg", "img/F2_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "J12_MAX", "name": "J12 MAX", "price": 6490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Castanho", "Azul", "Verde musgo", "Cinza", "Branca", "Preta"], "images": ["img/J12_MAX.jpg"], "imagensPadrao": ["img/J12_MAX.jpg"], "coresFotos": {}, "featured": false}, {"key": "Q1", "name": "Q1", "price": 7490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "170 kg"]], "cores": ["Preta fosca", "Preta brilhante", "Cinza", "Branca"], "images": ["img/Q1.jpg"], "imagensPadrao": ["img/Q1.jpg"], "coresFotos": {}, "featured": false}, {"key": "PD-100", "name": "PD-100", "price": 3990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "400W"], ["Bateria", "36V/10AH"], ["Autonomia", "25/35 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "5h a 7h"], ["Capacidade", "100 kg"]], "cores": ["Vermelha", "Azul", "Amarela"], "images": ["img/PD-100.jpg"], "imagensPadrao": ["img/PD-100.jpg"], "coresFotos": {}, "featured": false}, {"key": "V8_PRO", "name": "V8 PRO", "price": 7490, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Branca", "Cinza", "Preta", "Preta (banco marrom)"], "images": ["img/V8_PRO.jpg"], "imagensPadrao": ["img/V8_PRO.jpg"], "coresFotos": {}, "featured": false}, {"key": "GT-16", "name": "GT-16", "price": 7990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta", "Laranja"], "images": ["img/GT-16.jpg", "img/GT-16_ambiente.jpg"], "imagensPadrao": ["img/GT-16.jpg", "img/GT-16_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "GT-20", "name": "GT-20", "price": 8590, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta (banco preto)", "Preta (banco marrom)", "Cinza"], "images": ["img/GT-20.jpg"], "imagensPadrao": ["img/GT-20.jpg"], "coresFotos": {}, "featured": false}, {"key": "Q8", "name": "Q8", "price": 8900, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta", "Cinza", "Branca"], "images": ["img/Q8.jpg"], "imagensPadrao": ["img/Q8.jpg"], "coresFotos": {}, "featured": false}, {"key": "GT-2000", "name": "GT-2000", "price": 10990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "2000W"], ["Bateria", "48V/24AH"], ["Autonomia", "60/70 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "170 kg"]], "cores": [], "images": ["img/GT-2000.jpg", "img/GT-2000_ambiente.jpg"], "imagensPadrao": ["img/GT-2000.jpg", "img/GT-2000_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "U1", "name": "U1", "price": 11490, "group": "Triciclos para passeio", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "200 kg"]], "cores": ["Verde", "Cinza", "Preta", "Vermelha", "Laranja"], "images": ["img/U1.jpg"], "imagensPadrao": ["img/U1.jpg"], "coresFotos": {}, "featured": false}, {"key": "U1S", "name": "U1S", "price": 12490, "group": "Triciclos para passeio", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/30AH"], ["Autonomia", "60/70 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "250 kg"]], "cores": ["Cinza", "Preta", "Vermelha", "Laranja"], "images": ["img/U1S.jpg", "img/U1S_ambiente.jpg"], "imagensPadrao": ["img/U1S.jpg", "img/U1S_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "A7", "name": "A7", "price": 1790, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "350W"], ["Bateria", "60V/24AH"], ["Autonomia", "20 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "80 kg"]], "cores": ["Verde água", "Laranja", "Preta"], "images": ["img/A7.jpg"], "imagensPadrao": ["img/A7.jpg"], "coresFotos": {}, "featured": false}, {"key": "D2", "name": "D2", "price": 3990, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "800W"], ["Bateria", "48V/15AH"], ["Autonomia", "30 km"], ["Velocidade máx.", "35 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "110 kg"]], "cores": [], "images": ["img/D2.jpg"], "imagensPadrao": ["img/D2.jpg"], "coresFotos": {}, "featured": false}, {"key": "T2_PRO", "name": "T2 PRO", "price": 3990, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "800W"], ["Bateria", "48V/15AH"], ["Autonomia", "30 km"], ["Velocidade máx.", "35 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "110 kg"]], "cores": [], "images": ["img/T2_PRO.jpg", "img/T2_PRO_ambiente.jpg"], "imagensPadrao": ["img/T2_PRO.jpg", "img/T2_PRO_ambiente.jpg"], "coresFotos": {}, "featured": false}];
+const PRODUTOS = [{"key": "A4", "name": "A4", "price": 8490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Verde", "Cinza", "Branca", "Preta"], "images": ["img/A4.jpg", "img/A4_ambiente.jpg"], "imagensPadrao": ["img/A4.jpg", "img/A4_ambiente.jpg"], "coresFotos": {}, "featured": true, "spin": [{"src": "img/spin/A4_0.jpg", "nome": "Frente"}, {"src": "img/spin/A4_1.jpg", "nome": "Frente esquerda"}, {"src": "img/spin/A4_2.jpg", "nome": "Lateral esquerda"}, {"src": "img/spin/A4_3.jpg", "nome": "Traseira esquerda"}, {"src": "img/spin/A4_4.jpg", "nome": "Traseira"}, {"src": "img/spin/A4_5.jpg", "nome": "Traseira direita"}, {"src": "img/spin/A4_6.jpg", "nome": "Lateral direita"}, {"src": "img/spin/A4_7.jpg", "nome": "Frente direita"}]}, {"key": "R13", "name": "R13", "price": 9490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta", "Cinza", "Branca", "Carbono", "Vermelha", "Preta (Inglaterra)"], "images": ["img/R13.jpg", "img/R13_ambiente.jpg"], "imagensPadrao": ["img/R13.jpg", "img/R13_ambiente.jpg"], "coresFotos": {}, "featured": true}, {"key": "WD-4", "name": "WD-4", "price": 8490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Vermelha", "Preta", "Laranja", "Branca", "Azul"], "images": ["img/WD-4.jpg", "img/WD-4_ambiente.jpg"], "imagensPadrao": ["img/WD-4.jpg", "img/WD-4_ambiente.jpg"], "coresFotos": {}, "featured": true}, {"key": "A5", "name": "A5", "price": 8490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta", "Prata", "Laranja", "Cinza", "Branca"], "images": ["img/A5.jpg", "img/A5_ambiente.jpg"], "imagensPadrao": ["img/A5.jpg", "img/A5_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "WD-6", "name": "WD-6", "price": 8490, "group": "Estilo urbano de pneu largo", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Amarela", "Branca", "Vinho", "Cinza"], "images": ["img/WD-6.jpg", "img/WD-6_ambiente.jpg"], "imagensPadrao": ["img/WD-6.jpg", "img/WD-6_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "T3", "name": "T3", "price": 7490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Branca", "Preta brilhante", "Cinza"], "images": ["img/T3.jpg", "img/T3_ambiente.jpg"], "imagensPadrao": ["img/T3.jpg", "img/T3_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "WD2_S", "name": "WD2 S", "price": 5990, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Vermelha", "Verde", "Preta", "Cinza", "Branca"], "images": ["img/WD2_S.jpg", "img/WD2_S_ambiente.jpg"], "imagensPadrao": ["img/WD2_S.jpg", "img/WD2_S_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "WD2", "name": "WD2", "price": 5690, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "180 kg"]], "cores": ["Preta fosca", "Carbono", "Branca", "Verde"], "images": ["img/WD2.jpg", "img/WD2_ambiente.jpg"], "imagensPadrao": ["img/WD2.jpg", "img/WD2_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "J20", "name": "J20", "price": 5490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Branca", "Preta", "Verde musgo"], "images": ["img/J20.jpg", "img/J20_ambiente.jpg"], "imagensPadrao": ["img/J20.jpg", "img/J20_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "T2", "name": "T2", "price": 5890, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Azul", "Preta"], "images": ["img/T2.jpg"], "imagensPadrao": ["img/T2.jpg"], "coresFotos": {}, "featured": false}, {"key": "Z1", "name": "Z1", "price": 5290, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Preta", "Verde", "Branca"], "images": ["img/Z1.jpg", "img/Z1_ambiente.jpg"], "imagensPadrao": ["img/Z1.jpg", "img/Z1_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "J10", "name": "J10", "price": 5290, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Cinza", "Castanho", "Preta"], "images": ["img/J10.jpg", "img/J10_ambiente.jpg"], "imagensPadrao": ["img/J10.jpg", "img/J10_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "Z2", "name": "Z2", "price": 4490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "500W"], ["Bateria", "48V/12AH"], ["Autonomia", "30/40 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "100 kg"]], "cores": ["Verde", "Roxa", "Rosa", "Preta", "Cinza", "Azul"], "images": ["img/Z2.jpg"], "imagensPadrao": ["img/Z2.jpg"], "coresFotos": {}, "featured": false}, {"key": "F2", "name": "F2", "price": 6490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Verde", "Branca", "Bege", "Cinza", "Preta"], "images": ["img/F2.jpg", "img/F2_ambiente.jpg"], "imagensPadrao": ["img/F2.jpg", "img/F2_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "J12_MAX", "name": "J12 MAX", "price": 6490, "group": "Dia a dia na cidade", "patinete": false, "specs": [["Motor", "800W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Castanho", "Azul", "Verde musgo", "Cinza", "Branca", "Preta"], "images": ["img/J12_MAX.jpg"], "imagensPadrao": ["img/J12_MAX.jpg"], "coresFotos": {}, "featured": false}, {"key": "Q1", "name": "Q1", "price": 7490, "group": "Scooters de maior porte", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "170 kg"]], "cores": ["Preta fosca", "Preta brilhante", "Cinza", "Branca"], "images": ["img/Q1.jpg"], "imagensPadrao": ["img/Q1.jpg"], "coresFotos": {}, "featured": false}, {"key": "PD-100", "name": "PD-100", "price": 3990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "400W"], ["Bateria", "36V/10AH"], ["Autonomia", "25/35 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "5h a 7h"], ["Capacidade", "100 kg"]], "cores": ["Vermelha", "Azul", "Amarela"], "images": ["img/PD-100.jpg"], "imagensPadrao": ["img/PD-100.jpg"], "coresFotos": {}, "featured": false}, {"key": "V8_PRO", "name": "V8 PRO", "price": 7490, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Branca", "Cinza", "Preta", "Preta (banco marrom)"], "images": ["img/V8_PRO.jpg"], "imagensPadrao": ["img/V8_PRO.jpg"], "coresFotos": {}, "featured": false}, {"key": "GT-16", "name": "GT-16", "price": 7990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta", "Laranja"], "images": ["img/GT-16.jpg", "img/GT-16_ambiente.jpg"], "imagensPadrao": ["img/GT-16.jpg", "img/GT-16_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "GT-20", "name": "GT-20", "price": 8590, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta (banco preto)", "Preta (banco marrom)", "Cinza"], "images": ["img/GT-20.jpg"], "imagensPadrao": ["img/GT-20.jpg"], "coresFotos": {}, "featured": false}, {"key": "Q8", "name": "Q8", "price": 8900, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "48V/24AH"], ["Autonomia", "40/50 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "150 kg"]], "cores": ["Preta", "Cinza", "Branca"], "images": ["img/Q8.jpg"], "imagensPadrao": ["img/Q8.jpg"], "coresFotos": {}, "featured": false}, {"key": "GT-2000", "name": "GT-2000", "price": 10990, "group": "Aventura e lazer", "patinete": false, "specs": [["Motor", "2000W"], ["Bateria", "48V/24AH"], ["Autonomia", "60/70 km"], ["Velocidade máx.", "32 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "170 kg"]], "cores": [], "images": ["img/GT-2000.jpg", "img/GT-2000_ambiente.jpg"], "imagensPadrao": ["img/GT-2000.jpg", "img/GT-2000_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "U1", "name": "U1", "price": 11490, "group": "Triciclos para passeio", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/24AH"], ["Autonomia", "50/60 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "200 kg"]], "cores": ["Verde", "Cinza", "Preta", "Vermelha", "Laranja"], "images": ["img/U1.jpg"], "imagensPadrao": ["img/U1.jpg"], "coresFotos": {}, "featured": false}, {"key": "U1S", "name": "U1S", "price": 12490, "group": "Triciclos para passeio", "patinete": false, "specs": [["Motor", "1000W"], ["Bateria", "60V/30AH"], ["Autonomia", "60/70 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "250 kg"]], "cores": ["Cinza", "Preta", "Vermelha", "Laranja"], "images": ["img/U1S.jpg", "img/U1S_ambiente.jpg"], "imagensPadrao": ["img/U1S.jpg", "img/U1S_ambiente.jpg"], "coresFotos": {}, "featured": false}, {"key": "A7", "name": "A7", "price": 1790, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "350W"], ["Bateria", "60V/24AH"], ["Autonomia", "20 km"], ["Velocidade máx.", "25 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "80 kg"]], "cores": ["Verde água", "Laranja", "Preta"], "images": ["img/A7.jpg"], "imagensPadrao": ["img/A7.jpg"], "coresFotos": {}, "featured": false}, {"key": "D2", "name": "D2", "price": 3990, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "800W"], ["Bateria", "48V/15AH"], ["Autonomia", "30 km"], ["Velocidade máx.", "35 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "110 kg"]], "cores": [], "images": ["img/D2.jpg"], "imagensPadrao": ["img/D2.jpg"], "coresFotos": {}, "featured": false}, {"key": "T2_PRO", "name": "T2 PRO", "price": 3990, "group": "Patinetes elétricos", "patinete": true, "specs": [["Motor", "800W"], ["Bateria", "48V/15AH"], ["Autonomia", "30 km"], ["Velocidade máx.", "35 km/h"], ["Recarga", "6h a 8h"], ["Capacidade", "110 kg"]], "cores": [], "images": ["img/T2_PRO.jpg", "img/T2_PRO_ambiente.jpg"], "imagensPadrao": ["img/T2_PRO.jpg", "img/T2_PRO_ambiente.jpg"], "coresFotos": {}, "featured": false}];
 const TELEFONE_BAURU = "5514996364081";
 const TELEFONE_AVARE = "5515998383231";
 
@@ -262,6 +279,8 @@ const grupos = ["Todos"].concat([...new Set(PRODUTOS.map(p => p.group))]);
 let filtroAtual = "Todos";
 let fotoAtual = 0;
 let modeloAtual = null;
+let modo360 = false;
+let giroAtual = 1;
 
 function renderFiltros() {
   const nav = document.getElementById("filtros");
@@ -296,6 +315,7 @@ function renderGrid() {
       '<div class="foto"><img src="' + p.images[0] + '" alt="' + p.name + '" loading="lazy"></div>' +
       '<div class="corpo">' +
         (p.featured ? '<span class="selo">DESTAQUE DO MÊS</span>' : '') +
+        (p.spin ? '<span class="selo360">VER EM 360°</span>' : '') +
         '<span class="grupo"></span>' +
         '<span class="nome"></span>' +
         '<span class="preco"><small>À vista</small></span>' +
@@ -311,6 +331,25 @@ function renderGrid() {
 function mostrarFoto() {
   const p = modeloAtual;
   const img = document.getElementById("foto");
+  const gal = document.getElementById("galeria");
+  const tem360 = !!(p.spin && p.spin.length);
+  document.getElementById("modo").hidden = !tem360;
+  document.getElementById("modo-fotos").setAttribute("aria-pressed", modo360 ? "false" : "true");
+  document.getElementById("modo-360").setAttribute("aria-pressed", modo360 ? "true" : "false");
+  document.getElementById("ilustra").hidden = !modo360;
+  gal.classList.toggle("giro", modo360);
+  if (modo360) {
+    const q = p.spin[giroAtual];
+    img.src = q.src;
+    img.alt = p.name + " - " + q.nome.toLowerCase();
+    gal.classList.remove("amb");
+    document.getElementById("ant").hidden = false;
+    document.getElementById("prox").hidden = false;
+    document.getElementById("contagem").hidden = false;
+    document.getElementById("contagem").textContent = q.nome;
+    return;
+  }
+  document.getElementById("dica").hidden = true;
   img.src = p.images[fotoAtual];
   img.alt = p.name + " - foto " + (fotoAtual + 1);
   img.parentElement.classList.toggle("amb", p.images[fotoAtual].indexOf("_ambiente") !== -1);
@@ -321,10 +360,14 @@ function mostrarFoto() {
   document.getElementById("contagem").textContent = (fotoAtual + 1) + " / " + p.images.length;
 }
 
-function abrirFicha(p) {
+function abrirFicha(p, em360) {
   modeloAtual = p;
   if (p.imagensPadrao) p.images = p.imagensPadrao.slice();
   fotoAtual = 0;
+  modo360 = !!(em360 && p.spin && p.spin.length);
+  giroAtual = 1;
+  if (p.spin) p.spin.forEach(q => { const i = new Image(); i.src = q.src; });   // já deixa os quadros carregados
+  document.getElementById("dica").hidden = !modo360;
   mostrarFoto();
   document.getElementById("ficha-grupo").textContent = p.group;
   document.getElementById("ficha-nome").textContent = p.name;
@@ -388,6 +431,13 @@ function fecharFicha() {
 }
 
 function mudarFoto(delta) {
+  if (modeloAtual && modo360) {
+    const n = modeloAtual.spin.length;
+    giroAtual = (giroAtual + delta + n) % n;
+    document.getElementById("dica").hidden = true;
+    mostrarFoto();
+    return;
+  }
   if (!modeloAtual || modeloAtual.images.length < 2) return;
   const n = modeloAtual.images.length;
   fotoAtual = (fotoAtual + delta + n) % n;
@@ -405,6 +455,50 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowRight") mudarFoto(1);
 });
 
+function definirModo(v) {
+  if (!modeloAtual) return;
+  modo360 = !!(v && modeloAtual.spin);
+  giroAtual = 1;
+  document.getElementById("dica").hidden = !modo360;
+  mostrarFoto();
+}
+document.getElementById("modo-fotos").addEventListener("click", () => definirModo(false));
+document.getElementById("modo-360").addEventListener("click", () => definirModo(true));
+
+// giro: arrastar a foto para os lados
+(function () {
+  const gal = document.getElementById("galeria");
+  let ativo = false, x0 = 0, base = 0;
+  gal.addEventListener("pointerdown", e => {
+    if (!modo360 || e.target.closest("button")) return;
+    ativo = true; x0 = e.clientX; base = giroAtual;
+    gal.classList.add("arrastando");
+    gal.setPointerCapture(e.pointerId);
+    document.getElementById("dica").hidden = true;
+  });
+  gal.addEventListener("pointermove", e => {
+    if (!ativo) return;
+    const n = modeloAtual.spin.length;
+    const passo = gal.clientWidth / (n * 1.15);
+    const novo = (((base + Math.round((e.clientX - x0) / passo)) % n) + n) % n;
+    if (novo !== giroAtual) { giroAtual = novo; mostrarFoto(); }
+  });
+  ["pointerup", "pointercancel"].forEach(t => gal.addEventListener(t, () => { ativo = false; gal.classList.remove("arrastando"); }));
+})();
+
+// link direto: #A4 abre a ficha, #A4-360 abre já no giro
+function abrirPeloEndereco() {
+  let h = "";
+  try { h = decodeURIComponent(location.hash.slice(1)).toLowerCase(); } catch (e) { return; }
+  if (!h) return;
+  const em360 = /-360$/.test(h);
+  const chave = h.replace(/-360$/, "");
+  const p = PRODUTOS.find(x => x.key.toLowerCase() === chave);
+  if (p) abrirFicha(p, em360);
+}
+window.addEventListener("hashchange", abrirPeloEndereco);
+
 renderFiltros();
 renderGrid();
+abrirPeloEndereco();
 </script>
