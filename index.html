@@ -202,7 +202,7 @@ button { font: inherit; }
     <div class="comprar">
       <div><h3>Pagamento</h3><p>Pix ou dinheiro à vista. Cartão de crédito em até 21x, com as taxas da operadora. Não trabalhamos com boleto.</p></div>
       <div><h3>Entrega</h3><p>Sem custo até 100 km da loja. Acima de 100 km: valor a combinar. Patinetes: não entregamos, somente retirada na loja.</p></div>
-      <div><h3>Garantia</h3><p>Chassi, motor e bateria: 2 anos. Partes elétricas e patinetes: 3 meses. Vale a partir da nota fiscal. Pneus e mau uso não são cobertos.</p></div>
+      <div><h3>Garantia</h3><p>Chassi e motor: 1 ano. Bateria: 18 meses. Partes elétricas e patinetes: 3 meses. Vale a partir da nota fiscal. Pneus e mau uso não são cobertos.</p></div>
       <div><h3>Técnica própria</h3><p>Assistência feita nas nossas lojas de Bauru e Avaré.</p></div>
     </div>
   </section>
@@ -378,7 +378,7 @@ function abrirFicha(p, em360) {
 
   const bn = document.getElementById("ficha-benef");
   bn.innerHTML = "";
-  const beneficios = [p.patinete ? "Garantia de 3 meses" : "Garantia de 2 anos",
+  const beneficios = [p.patinete ? "Garantia de 3 meses" : "Garantia de 1 ano (bateria 18 meses)",
                       p.patinete ? "Retire na loja" : "Entrega sem custo até 100 km",
                       "Test-drive na loja"];
   beneficios.forEach(t => { const s = document.createElement("span"); s.textContent = t; bn.appendChild(s); });
